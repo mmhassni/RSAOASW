@@ -14,7 +14,7 @@ public class QueryLayerDAOImpl implements QueryLayerDAOInterface
 
 
     //On récupére notre base de donnée
-    private QueryLayerDAOFactory daoFactory = QueryLayerDAOFactory.getInstance("jdbc:postgresql://localhost/EHTP","postgres","212Tilifeureusse");
+    private QueryLayerDAOFactory daoFactory = QueryLayerDAOFactory.getInstance();
 
 
     public QueryLayerDAOImpl( QueryLayerDAOFactory daoFactory )
@@ -59,8 +59,10 @@ public class QueryLayerDAOImpl implements QueryLayerDAOInterface
     }
 
     @Override
-    public JSONObject getRequestResult(String request)
+    public JSONObject getRequestResult(String request,String idTable, String fieldGeom,int wkid)
     {
+
+        wkid=3857;
 
         Connection connexion = null;
         PreparedStatement preparedStatement = null;
@@ -71,6 +73,7 @@ public class QueryLayerDAOImpl implements QueryLayerDAOInterface
         JSONObject feature =  null; // l'objet correspondant à un seul enregistrement
         JSONObject geometry = null; // l'objet correspondant à la géometrie
         JSONArray features =  new JSONArray(); //l'array contenant tout les objets feature
+        JSONArray fields = null; //l'array contenant tout les champs
         String nomChampCourant = "";
 
 
@@ -89,13 +92,31 @@ public class QueryLayerDAOImpl implements QueryLayerDAOInterface
                 geometry = new JSONObject();
 
 
+                //on doit enregistrer au moins une seule fois
+                if(fields == null)
+                {
+                    fields = new JSONArray();
+                    for(int i = 0; i <= resultSetCount(resultSet);i++)
+                    {
+                        nomChampCourant = resultSetNameAttribut(resultSet,i);
+                        if(nomChampCourant != null)
+                        {
+                            fields.add(nomChampCourant);
+                        }
+
+                    }
+
+
+                }
+
+
 
                 for(int i = 0; i <= resultSetCount(resultSet);i++)
                 {
 
                     nomChampCourant = resultSetNameAttribut(resultSet,i);
 
-                    if(nomChampCourant != null && !"geomjson".equals(nomChampCourant) && !"geom".equals(nomChampCourant))
+                    if(nomChampCourant != null && !fieldGeom.equals(nomChampCourant) && !fieldGeom.equals(nomChampCourant))
                     {
 
                         feature.put(nomChampCourant,resultSet.getString(nomChampCourant));
@@ -118,8 +139,12 @@ public class QueryLayerDAOImpl implements QueryLayerDAOInterface
 
             }
 
-            //on met le seul attribut de l'objet fichierJson à la fin
+            //on met les attributs de l'objet fichierJson à la fin
+            fichierJson.put("fields",fields);
             fichierJson.put("features",features);
+            fichierJson.put("id",idTable);
+            fichierJson.put("projection",wkid  );
+
 
             return fichierJson;
         }
