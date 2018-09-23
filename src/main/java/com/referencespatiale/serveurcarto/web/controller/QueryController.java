@@ -50,6 +50,24 @@ public class QueryController
     }
 
     @CrossOrigin
+    @RequestMapping(value = "geometricRequest/{request}&{idTable}&{fieldGeom}&{wkid}",method = RequestMethod.GET)
+    public JSONObject geometricRequest(@PathVariable String request,@PathVariable String idTable,@PathVariable String fieldGeom,@PathVariable String wkid)
+    {
+
+
+        //System.out.println(request);
+        queryLayerDAOFactory = QueryLayerDAOFactory.getInstance();
+        queryLayerDAOImpl = new QueryLayerDAOImpl(queryLayerDAOFactory);
+        //request = stringConverter(request);
+        //System.out.println(request);
+
+        return queryLayerDAOImpl.getRequestResult(request,idTable,fieldGeom,Integer.parseInt(wkid));
+
+    }
+
+
+
+    @CrossOrigin
     @RequestMapping(value = "changeProperties/{url}&{driver}&{nomutilisateur}&{motdepasse}",method = RequestMethod.GET)
     public String changeProperties(@PathVariable String url,@PathVariable String driver,@PathVariable String nomutilisateur,@PathVariable String motdepasse)
     {

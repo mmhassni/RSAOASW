@@ -16,8 +16,11 @@ public interface QueryLayerDAOInterface
     //retourne tout les dépandences d'une table donnée
     JSONObject getTablesDependances(String tableName);
 
-    //retourne tout les résultat d'une requette passé en parametre
+    //retourne tout les résultats d'une requette spatiale passé en parametre
     JSONObject getRequestResult(String request,String idTable, String fieldGeom,int wkid);
+
+    //retourne tout les résultats d'une requette quelquonque passé en parametre
+    JSONObject getRequestResult(String request);
 
 
 
