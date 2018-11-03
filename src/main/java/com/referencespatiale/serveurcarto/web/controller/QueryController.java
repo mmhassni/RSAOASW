@@ -1,17 +1,15 @@
 package com.referencespatiale.serveurcarto.web.controller;
 
 
-import com.referencespatiale.serveurcarto.dao.QueryLayerDAOInterface;
 import com.referencespatiale.serveurcarto.dao.QueryLayerDAOFactory;
 import com.referencespatiale.serveurcarto.dao.QueryLayerDAOImpl;
-import com.referencespatiale.serveurcarto.model.QueryLayer;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+
 import java.util.Properties;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import org.json.simple.JSONObject;
 import org.springframework.web.bind.annotation.*;
 
 
